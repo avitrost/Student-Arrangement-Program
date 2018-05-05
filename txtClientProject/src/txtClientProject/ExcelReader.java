@@ -1,5 +1,3 @@
-package txtClientProject;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,8 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelReader {
 	XSSFWorkbook wb;
 	
-	public ExcelReader(File inputFile) throws IOException{
-		FileInputStream file = new FileInputStream(inputFile);
+	public ExcelReader(String filePath) throws IOException{
+		FileInputStream file = new FileInputStream(new File(filePath));
 		wb = new XSSFWorkbook(file);
 	}
 	
@@ -29,6 +27,27 @@ public class ExcelReader {
 			Row row = rowIterator.next();
 			if(firstRow == true){
 				firstRow = false;
+				Iterator<Cell> cellIterator = row.cellIterator();
+				int i = 0;
+				while (cellIterator.hasNext()) {
+					Cell cell = cellIterator.next();
+					if(i==0 && !cell.getStringCellValue().equals("ID")){
+						return null;
+					} else if(i==1 && !cell.getStringCellValue().equals("Alpha_Name")){
+						return null;
+					} else if(i==2 && !cell.getStringCellValue().equals("G")){
+						return null;
+					} else if(i==3 && !cell.getStringCellValue().equals("PHS House")){
+						return null;
+					}else if(i==4 && !cell.getStringCellValue().equals("Summe MathClass")){
+						return null;
+					}else if(i==5 && !cell.getStringCellValue().equals("CSchool")){
+						return null;
+					}else if(i==6 && !cell.getStringCellValue().equals("MCurrentCourse")){
+						return null;
+					}
+					i++;
+				}
 			} else {
 				Iterator<Cell> cellIterator = row.cellIterator();
 				int i = 0;
