@@ -22,29 +22,39 @@ public class ExcelReader {
 		XSSFSheet sheet = wb.getSheetAt(0);
 		Iterator<Row> rowIterator = sheet.iterator();
 		ArrayList<Student> students = new ArrayList<Student>();
+		boolean firstRow = true;
 		while (rowIterator.hasNext()) {
 			Row row = rowIterator.next();
-			Iterator<Cell> cellIterator = row.cellIterator();
-			int i = 0;
-			String name = "";
-			String gender = "";
-			String session = "";
-			String school = "";
-			
-			while (cellIterator.hasNext()) {
-				Cell cell = cellIterator.next();
-				if(i==1){
-					name = cell.getStringCellValue();
-				} else if(i==2){
-					gender = cell.getStringCellValue();
-				} else if(i==4){
-					session = cell.getStringCellValue();
-				} else if(i==6){
-					school = cell.getStringCellValue();
+			if(firstRow == true){
+				firstRow = false;
+			} else {
+				Iterator<Cell> cellIterator = row.cellIterator();
+				int i = 0;
+				String name = "";
+				String gender = "";
+				String session = "";
+				String school = "";
+				boolean addStudent = true;
+				while (cellIterator.hasNext()) {
+					Cell cell = cellIterator.next();
+					if(i==1){
+						name = cell.getStringCellValue();
+					} else if(i==2){
+						gender = cell.getStringCellValue();
+					} else if(i==4){
+						if(cell.getStringCellValue().equals("No")){
+							addStudent = false;
+						}
+						session = cell.getStringCellValue();
+					} else if(i==6){
+						school = cell.getStringCellValue();
+					}
+					i++;
 				}
-				i++;
+				if(addStudent){
+					students.add(new Student(name, gender, session, school));
+				}
 			}
-			students.add(new Student(name, gender, session, school));
 		}
 		return students;
 	}
