@@ -43,6 +43,7 @@ public class Program extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		window = primaryStage;
 		window.getIcons().add(new Image("icon1.png"));
+		window.setTitle("Student Arrangement Program");
 		window.setScene(selectFileScene);
 		window.show();
 		

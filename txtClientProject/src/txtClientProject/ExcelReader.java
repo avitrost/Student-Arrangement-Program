@@ -1,3 +1,5 @@
+package txtClientProject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,8 +15,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelReader {
 	XSSFWorkbook wb;
 	
-	public ExcelReader(String filePath) throws IOException{
-		FileInputStream file = new FileInputStream(new File(filePath));
+	public ExcelReader(File inputFile) throws IOException{
+		FileInputStream file = new FileInputStream(inputFile);
 		wb = new XSSFWorkbook(file);
 	}
 	
