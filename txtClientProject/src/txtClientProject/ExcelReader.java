@@ -13,9 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelReader {
 	XSSFWorkbook wb;
 	
-	public ExcelReader(String filePath) throws IOException{
-		FileInputStream file = new FileInputStream(new File(filePath));
-		wb = new XSSFWorkbook(file);
+	public ExcelReader(File filePath) throws IOException{
+		wb = new XSSFWorkbook(filePath);
 	}
 	
 	public ArrayList<Student> readFile(){
