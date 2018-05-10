@@ -30,13 +30,17 @@ public class Program extends Application {
 	public File selectFile() {
 		FileDialog dialog = new FileDialog((Frame)null, "Select File to Open"); // Try replacing (Frame)null with the JFrame
 		dialog.setDirectory("C:\\");
-		dialog.setFile("*.docx");
+		//dialog.setFile("*.docx");
 		dialog.setMode(FileDialog.LOAD);
 		dialog.setVisible(true);
 		inputFile = new File(dialog.getDirectory() + dialog.getFile());
 		System.out.println(inputFile);
 		System.out.println(inputFile.equals(dialog.getFiles()[0]));
 		return inputFile;
+	}
+
+	public static Stage getWindow() {
+		return window;
 	}
 
 	@Override
