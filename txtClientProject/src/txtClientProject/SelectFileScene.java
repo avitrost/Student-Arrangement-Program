@@ -32,36 +32,40 @@ public class SelectFileScene extends Scene{
 	private Button confirm;
 	private Label filePath;
 	private Scene selectSessionScene = new SelectSessionScene(new GridPane());
+	private ArrayList<Student> students;
 	
 	
-	public SelectFileScene(GridPane pane){
-		super(pane, 800, 450);
+	public SelectFileScene(GridPane pane){ // It doesn't need to be GridPane, but it will most likely be the best option for this
+		super(pane, 800, 600); // Window size
 		topText = new Label("FILE SELECTION");
 		middleText = new Label("FILE PATH:");
 		filePath = new Label("______________________________");
 		chooseFile = new Button("CHOOSE FILE");
-		chooseFile.setOnAction(e -> selectFile());
+		chooseFile.setOnAction(e -> selectFile()); // Action when clicked
 		confirm = new Button("CONFIRM");
-		confirm.setDefaultButton(true);
-		confirm.setDisable(true);
+		confirm.setDefaultButton(true); // Makes it so you can hit enter instead of pressing the confirm button
+		confirm.setDisable(true); // Grays it out
 		confirm.setOnAction(e -> confirm());
-		pane.setAlignment(Pos.CENTER);
-		pane.setHgap(10);
+		
+		// ***THINGS THAT CAN BE CHANGED***
+		pane.setAlignment(Pos.CENTER); // Makes it so the center element is in the exact center,
+		                               // and all other elements are based off of this position
+		pane.setHgap(10); // These set the gaps for all elements, look into how to adjust the gaps for each individual element
 		pane.setVgap(130);
-		//pane.setGridLinesVisible(true);
-		GridPane.setConstraints(topText, 1, 0);
+		pane.setGridLinesVisible(true); // Turned on to help with positioning, will be turned off in end product
+		GridPane.setConstraints(topText, 1, 0); // These say where to put the elemtns in the grid
+		                                        // There is an overloaded version of this for some fine tuning, check API
 		GridPane.setConstraints(middleText, 0, 1);
 		GridPane.setConstraints(filePath, 1, 1);
 		GridPane.setConstraints(chooseFile, 2, 1);
 		GridPane.setConstraints(confirm, 1, 2);
-		GridPane.setHalignment(topText, HPos.CENTER);
+		GridPane.setHalignment(topText, HPos.CENTER); // Centers elements in their cells
 		GridPane.setHalignment(confirm, HPos.CENTER);
-	    pane.setPadding(new Insets(10, 10, 10, 10));
-	    pane.getChildren().addAll(topText, middleText, filePath, chooseFile, confirm);
+	    pane.getChildren().addAll(topText, middleText, filePath, chooseFile, confirm); // Adds elements to the pane so they can be visible
 	}
 	
 	public void selectFile() {
-		FileDialog dialog = new FileDialog((Frame)null, "Select File to Open"); // Try replacing (Frame)null with the JFrame
+		FileDialog dialog = new FileDialog((Frame)null, "Select File to Open");
 		dialog.setDirectory("C:\\");
 		dialog.setFile("*.xlsx");
 		dialog.setMode(FileDialog.LOAD);
@@ -75,12 +79,7 @@ public class SelectFileScene extends Scene{
 		file = dialog.getFiles()[0];
 		filePath.setText(file.toString());
 		confirm.setDisable(false);
-		//System.out.println(file);
-		//System.out.println(file.equals(dialog.getFiles()[0]));
-	}
-	
-	public void confirm(){
-		ExcelReader er = null;
+		ExcelReader er = null; // Does this after select file so that there is minimal delay on confirm button
 		try {
 			er = new ExcelReader(file);
 		} catch (IOException e) {
@@ -88,14 +87,19 @@ public class SelectFileScene extends Scene{
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		}
-		ArrayList<Student> students = er.readFile();
+		students = er.readFile();
+		//System.out.println(file);
+		//System.out.println(file.equals(dialog.getFiles()[0]));
+	}
+	
+	public void confirm(){
 		if(students.size() == 0){
 			JOptionPane.showMessageDialog(null,
 					"Please select a file with the correct format", "Incorrect Format",
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		System.out.println(students);
+		System.out.println(students); // For testing
 		Program.getWindow().setScene(selectSessionScene);
 		
 	}
