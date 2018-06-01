@@ -69,7 +69,7 @@ public class ExcelReader {
 							addStudent = false;
 						}
 						session = cell.getStringCellValue();
-					} else if(i==6){
+					} else if(i==5){ // Used to say 6
 						school = cell.getStringCellValue();
 					}
 					i++;
