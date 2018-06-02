@@ -19,7 +19,7 @@ public class PartialCandidate {
 	private int numSingleGirlGroups = 0;
 	private int numDoubleGirlGroups = 0;
 	
-	private static ArrayList<Integer>[] template = new ArrayList[35];
+	private static ArrayList<Integer>[] template;
 	private int currentStudentNumInList;
 	private int currentSeatNum;
 	private boolean threeGirlsOptionAvailable = false;
@@ -78,7 +78,7 @@ public class PartialCandidate {
 	    { 15, 38, 14, 19 },
 	    { 13, 16, 12, 23 },
 	    { 42, 26, 4, 1 }  };*/
-	public static Integer[][] templateArr = { { 12, 27, 8, 20 }, // 28
+	public static Integer[][] templateArr; /*= { { 12, 27, 8, 20 }, // 28
 		    { 7, 17, 3, 24 },
 		    { 5, 23, 10, 16 },
 		    { 6, 21, 11, 26 },
@@ -112,21 +112,7 @@ public class PartialCandidate {
 		    { 3, 21, 0, 23 },
 		    { 15, 11, 7, 19 },
 		    { 9, 16, 12, 4 },
-		    { 10, 26, 25, 17  } };
-	
-	public PartialCandidate(ArrayList<Student> seating, ArrayList<Student> students, int currentStudentNumInList, int currentSeatNum){
-		this.seating = seating;
-		this.students = students;
-		this.currentStudentNumInList = currentStudentNumInList;
-		this.currentSeatNum = currentSeatNum;
-		arrayToTemplate(templateArr);
-	}
-	
-	public PartialCandidate(ArrayList<Student> seating, ArrayList<Student> students){
-		arrayToTemplate(templateArr);
-		this.seating = seating;
-		this.students = students;
-	}
+		    { 10, 26, 25, 17  } };*/
 	
 	public PartialCandidate(PartialCandidate other){
 		seating = new ArrayList<Student>(other.seating);
@@ -156,6 +142,9 @@ public class PartialCandidate {
 		seatsLeft = new ArrayList<Integer>(totalNumStudentsInSession);
 		for(int i = 0; i < totalNumStudentsInSession; i++){
 			seatsLeft.add(i);
+		}
+		if(students.size() % 2 == 1){
+			threeGirlsOptionAvailable = true;
 		}
 	}
 	
@@ -211,15 +200,6 @@ public class PartialCandidate {
 	}
 
 
-	public ArrayList<Student> getStudents() {
-		return students;
-	}
-
-
-	public void setStudents(ArrayList<Student> students) {
-		this.students = students;
-	}
-
 
 	public boolean isThreeGirlsOptionAvailable() {
 		return threeGirlsOptionAvailable;
@@ -248,6 +228,14 @@ public class PartialCandidate {
 		this.currentSeatNum = currentSeatNum;
 	}
 	
+	public static ArrayList<Integer>[] getTemplate() {
+		return template;
+	}
+
+	public static void setTemplate(ArrayList<Integer>[] template) {
+		PartialCandidate.template = template;
+	}
+
 	// ISSUE IS IN HERE
 	public Student[][] getGroups(Student student){ // Returns the groups that the student is in
 		//System.out.println(Algorithm.getOrderedStudents());
@@ -274,6 +262,7 @@ public class PartialCandidate {
 	}
 	
 	public static void arrayToTemplate(Integer[][] arr){
+		template = new ArrayList[arr.length];
 		for(int i = 0; i < arr.length; i++){
 			ArrayList<Integer> al = new ArrayList<Integer>(Arrays.asList(arr[i]));
 			template[i] = al;
@@ -338,6 +327,14 @@ public class PartialCandidate {
 	
 	public void incrementNumDoubleGirlGroups(){
 		this.numDoubleGirlGroups++;
+	}
+
+	public static Integer[][] getTemplateArr() {
+		return templateArr;
+	}
+
+	public static void setTemplateArr(Integer[][] templateArr) {
+		PartialCandidate.templateArr = templateArr;
 	}
 	
 	

@@ -11,6 +11,7 @@ public class Algorithm {
 	
 	public static ArrayList<Student> students; // ordered
 	private static int totalNumInSession;
+	private static int totalNumRoundedUp;
 	private static int numStudents;
 	private static boolean finished = false;
 	private static long startTime;
@@ -26,9 +27,9 @@ public class Algorithm {
 			return;
 		}
 		//System.out.println(c.getSeating());
-		System.out.println(c);
+		//System.out.println(c);
 		//System.out.println(c.getNextStudentNum());
-		if(c.getNextStudentNum() == numStudents - 1){ // Accept(c)
+		if(c.getNextStudentNum() == numStudents - 1){// || c.getSeatsLeft().size() == 0){ // Accept(c)
 			finished = true;
 			bestCandidate = c;
 			System.out.println(c);             // Temporary Output(c)
@@ -151,7 +152,7 @@ public class Algorithm {
 			return false;
 		}
 		Student newStudent = students.get(c.getNextStudentNum());
-		if(newStudent.toString().trim().equals("Peshwa, Anika M.") && !girlsMode){
+		if(newStudent.toString().trim().equals("Song, Justin Y.") && !girlsMode){
 			System.out.println("test");
 		}
 		//System.out.println(newStudent);
@@ -162,6 +163,7 @@ public class Algorithm {
 			int girls = 0;
 			int clemente = 0;
 			int people = 0;
+			int placeholders = 0;
 			for(Student student : group){
 				//System.out.println(Arrays.deepToString(group));
 				if(student != null && student.isNone() == false){
@@ -172,12 +174,18 @@ public class Algorithm {
 					if(student.isFemale()){
 						girls++;
 					}
+					if(student.isPlaceholder()){
+						placeholders++;
+					}
 				}
 			}
 			//System.out.println(people + "  " + girls + "  " + clemente);
 			if(clemente > 3){ // FIX LATER
 				//System.out.println(Arrays.toString(group));
 				//System.out.println("true");
+				return true;
+			}
+			if(placeholders > 1){
 				return true;
 			}
 			if(girlsMode){
@@ -217,13 +225,10 @@ public class Algorithm {
 		Algorithm.students = students;
 	}
 
-	public static PartialCandidate generateSeating(ArrayList<Student> studentList, PartialCandidate c) {
+	public static PartialCandidate generateSeating(ArrayList<Student> studentList, PartialCandidate c, int totalSize) {
 		students = studentList;
 		numStudents = students.size();
 		sortStudents();
-		for(int i = 0; i < students.size(); i++){
-			students.get(i).setNumberInList(i);
-		}
 		System.out.println(students);
 		
 		startTime = System.nanoTime();
@@ -238,9 +243,10 @@ public class Algorithm {
 		
 		System.out.println(finished);
 		if(girlsMode){
-			PartialCandidate root = new PartialCandidate(students, totalNumInSession);
+			PartialCandidate root = new PartialCandidate(students, totalNumInSession); //
 			backtrack(root);
 			System.out.println(bestCandidate);
+			System.out.println(bestCandidateNumPairs);
 			girlsMode = false;
 		}
 		long endTime = System.nanoTime();
@@ -264,6 +270,14 @@ public class Algorithm {
 
 	public static void setGirlsMode(boolean girlsMode) {
 		Algorithm.girlsMode = girlsMode;
+	}
+
+	public static int getTotalNumRoundedUp() {
+		return totalNumRoundedUp;
+	}
+
+	public static void setTotalNumRoundedUp(int totalNumRoundedUp) {
+		Algorithm.totalNumRoundedUp = totalNumRoundedUp;
 	}
 
 	

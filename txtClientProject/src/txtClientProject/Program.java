@@ -21,8 +21,9 @@ public class Program extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		selectFileScene.getStylesheets().add("DarkMaterial.css");
 		window = primaryStage;
-		window.getIcons().add(new Image("SAPThumbnail.png"));
+		//window.getIcons().add(new Image("SAPThumbnail.png"));
 		window.setTitle("Student Arrangement Program");
 		window.setScene(selectFileScene);
 		window.show();
