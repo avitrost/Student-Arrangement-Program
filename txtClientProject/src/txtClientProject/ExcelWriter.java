@@ -5,44 +5,25 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Set;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.sl.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import jxl.*;
-import jxl.write.*;
-import jxl.write.Number;
-
 public class ExcelWriter {
-	public static void writeFile(File filepath, Student[][][] seatingChart) throws InvalidFormatException, IOException{
-		WritableWorkbook workbook = Workbook.createWorkbook(filepath);
-		try {
-			workbook.close();
-		} catch (WriteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void writeFile(File filepath, ArrayList<Student>[][] seatingChart) throws InvalidFormatException, IOException{
 		FileInputStream fis = new FileInputStream(filepath);
 		XSSFWorkbook wb = new XSSFWorkbook();
 		int i = 1;
-		for(Student[][] day : seatingChart){
+		for(ArrayList<Student>[] day : seatingChart){
 			// creates a new sheet for 5 days
 			String sheetName = "Day " + i;
 			i++;
 			XSSFSheet sheet = (XSSFSheet)wb.createSheet(sheetName);
 	        int rownum = 0;
-	        for (Student[] team : day) {
+	        for (ArrayList<Student> team : day) {
 	            XSSFRow row = sheet.createRow(rownum);
 	            rownum++;
 	            int cellnum = 0;
