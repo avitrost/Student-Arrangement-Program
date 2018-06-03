@@ -187,9 +187,15 @@ public class SelectSessionScene extends Scene{
 					}
 				}
 				if(group.size() == 3){
-					group.get(0).getSeats()[day] = 'B';
-					group.get(1).getSeats()[day] = 'C';
-					group.get(2).getSeats()[day] = 'D';
+					if(groupNum < 4){
+						group.get(0).getSeats()[day] = 'A';
+						group.get(1).getSeats()[day] = 'B';
+						group.get(2).getSeats()[day] = 'C';
+					} else{
+						group.get(0).getSeats()[day] = 'B';
+						group.get(1).getSeats()[day] = 'C';
+						group.get(2).getSeats()[day] = 'D';
+					}
 				} else{
 					group.get(0).getSeats()[day] = 'A';
 					group.get(1).getSeats()[day] = 'B';
