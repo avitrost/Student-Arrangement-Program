@@ -6,8 +6,8 @@ public class Student {
 	private String school;
 	private String gender;
 	private String program;
-	private int group;
-	private char seat;
+	private int[] groups = new int[5];
+	private char[] seats = new char[5];
 	private boolean clemente;
 	private boolean female;
 	private boolean placeholder;
@@ -86,22 +86,6 @@ public class Student {
 
 	public void setProgram(String program) {
 		this.program = program;
-	}
-
-	public int getGroup() {
-		return group;
-	}
-
-	public void setGroup(int group) {
-		this.group = group;
-	}
-
-	public char getSeat() {
-		return seat;
-	}
-
-	public void setSeat(char seat) {
-		this.seat = seat;
 	}
 
 	public int getNumberInList() {
@@ -194,6 +178,22 @@ public class Student {
 
 	public void setNone(boolean none) {
 		this.none = none;
+	}
+
+	public int[] getGroups() {
+		return groups;
+	}
+
+	public void setGroups(int[] groups) {
+		this.groups = groups;
+	}
+
+	public char[] getSeats() {
+		return seats;
+	}
+
+	public void setSeats(char[] seats) {
+		this.seats = seats;
 	}
 	
 	/*public static void main(String[] args) {

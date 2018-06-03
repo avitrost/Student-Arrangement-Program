@@ -153,6 +153,58 @@ public class SelectSessionScene extends Scene{
 				JOptionPane.INFORMATION_MESSAGE);
 		
 	}
+	
+	public void seatStudents(ArrayList<Student>[][] groups){
+		for(int day = 0; day < 5; day++){
+			for(int groupNum = 0; groupNum < groups[0].length; groupNum++){
+				int clementeIndex1 = -1;
+				int clementeIndex2 = -1;
+				ArrayList<Student> group = groups[day][groupNum];
+				for(int i = 0; i < group.size(); i++){
+					Student s = group.get(i);
+					s.getGroups()[day] = groupNum;
+					if(s.isClemente()){
+						if(clementeIndex1 == -1){
+							clementeIndex1 = i;
+						} else if(clementeIndex2 == -1){
+							clementeIndex2 = i;
+						}
+					}
+				}
+				if(groupNum < 4 || group.size() == 3){
+					if(clementeIndex1 != -1){
+						swap(group, clementeIndex1, 0);
+					}
+					if(clementeIndex2 != -1){
+						swap(group, clementeIndex2, 2);
+					}
+				} else{
+					if(clementeIndex1 != -1){
+						swap(group, clementeIndex1, 1);
+					}
+					if(clementeIndex2 != -1){
+						swap(group, clementeIndex2, 3);
+					}
+				}
+				if(group.size() == 3){
+					group.get(0).getSeats()[day] = 'B';
+					group.get(1).getSeats()[day] = 'C';
+					group.get(2).getSeats()[day] = 'D';
+				} else{
+					group.get(0).getSeats()[day] = 'A';
+					group.get(1).getSeats()[day] = 'B';
+					group.get(2).getSeats()[day] = 'C';
+					group.get(3).getSeats()[day] = 'D';
+				}
+			}
+		}
+	}
+	
+	public void swap(ArrayList<Student> group, int index1, int index2){
+		Student temp = group.get(index1);
+		group.set(index1, group.get(index2));
+		group.set(index2, temp);
+	}
 
 	public ArrayList<Student> getStudents() {
 		return students;
