@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 public class SelectSessionScene extends Scene{
@@ -204,6 +205,8 @@ public class SelectSessionScene extends Scene{
 				}
 			}
 		}
+		Scene sortedStudentScene = new SortedStudentScene(new BorderPane(), groups);
+		Program.getWindow().setScene(sortedStudentScene);
 	}
 	
 	public void swap(ArrayList<Student> group, int index1, int index2){
