@@ -27,21 +27,26 @@ import javafx.scene.layout.VBox;
 
 public class SelectFileScene extends Scene{
 	
+	private GridPane pane;
 	private File file;
 	private Label topText;
 	private Label middleText;
+	private Label incorrectFile;
 	private Button chooseFile;
 	private Button confirm;
 	private TextField fileName;
 	private Scene selectSessionScene = new SelectSessionScene(new GridPane());
 	private ArrayList<Student> students;
+	private boolean wrongFile = false;
 	
 	
-	public SelectFileScene(GridPane pane){ // It doesn't need to be GridPane, but it will most likely be the best option for this
-		super(pane, 800, 600); // Window size
+	public SelectFileScene(GridPane gridPane){ // It doesn't need to be GridPane, but it will most likely be the best option for this
+		super(gridPane, 800, 600); // Window size
+		pane = gridPane;
 		topText = new Label("File Selection");
 		topText.setId("label-headers");
 		middleText = new Label("File Name:");
+		incorrectFile = new Label("The file you have chosen is of incorrect format.\nPlease select a file with the correct format and headings.");
 		fileName = new TextField("");
 		fileName.setEditable(false);
 		fileName.textProperty().addListener(new ChangeListener<String>() { // Resizes TextField to fit new text
@@ -50,7 +55,7 @@ public class SelectFileScene extends Scene{
 	                String n) {
 	            // expand the textfield
 	            fileName.setPrefWidth(TextUtils.computeTextWidth(fileName.getFont(),
-	                    fileName.getText(), 0.0D) + 1);
+	                    fileName.getText(), 0.0D) + 14);
 	        }
 	    });
 		chooseFile = new Button("Choose File");
@@ -73,6 +78,7 @@ public class SelectFileScene extends Scene{
 		GridPane.setConstraints(fileName, 1, 1);
 		GridPane.setConstraints(chooseFile, 2, 1);
 		GridPane.setConstraints(confirm, 1, 2);
+		//GridPane.setConstraints(incorrectFile, 1, 2);
 		GridPane.setHalignment(topText, HPos.CENTER); // Centers elements in their cells
 		GridPane.setHalignment(confirm, HPos.CENTER);
 	    pane.getChildren().addAll(topText, middleText, fileName, chooseFile, confirm); // Adds elements to the pane so they can be visible
@@ -93,7 +99,6 @@ public class SelectFileScene extends Scene{
 		}
 		file = dialog.getFiles()[0];
 		fileName.setText(file.getName());
-		confirm.setDisable(false);
 		ExcelReader er = null; // Does this after select file so that there is minimal delay on confirm button
 		try {
 			er = new ExcelReader(file);
@@ -103,6 +108,21 @@ public class SelectFileScene extends Scene{
 			e.printStackTrace();
 		}
 		students = er.readFile();
+		if(students == null || students.size() == 0){
+			confirm.setDisable(true);
+			wrongFile = true;
+			GridPane.setConstraints(incorrectFile, 1, 2);
+			GridPane.setConstraints(confirm, 1, 3);
+			pane.getChildren().add(incorrectFile);
+		}
+		else{
+			confirm.setDisable(false);
+			if(wrongFile){
+				wrongFile = false;
+				pane.getChildren().remove(incorrectFile);
+				GridPane.setConstraints(confirm, 1, 2);
+			}
+		}
 		//System.out.println(file);
 		//System.out.println(file.equals(dialog.getFiles()[0]));
 	}
