@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -21,8 +25,33 @@ public class ExcelWriter {
 			ArrayList<Student>[] day = seatingChart[dayNum-1];
 			// makes a title
 	        XSSFRow headerRow = sheet.createRow(rownum);
-	        XSSFCell dayCell = (XSSFCell) headerRow.createCell(0);
-	        dayCell.setCellValue("Day " + dayNum);
+	        XSSFCell dayCell = (XSSFCell) headerRow.createCell(1);
+	        String dayoftheweek = "";
+	        switch(dayNum){
+	        case 1:
+	        	dayoftheweek = "Monday";
+	        	break;
+	        case 2:
+	        	dayoftheweek = "Tuesday";
+	        	break;
+	        case 3:
+	        	dayoftheweek = "Wednesday";
+	        	break;
+	        case 4:
+	        	dayoftheweek = "Thursday";
+	        	break;
+	        case 5:
+	        	dayoftheweek = "Friday";
+	        	break;
+	        }
+	        dayCell.setCellValue(dayoftheweek);
+	        //Style the Header Cell
+	        XSSFFont font = wb.createFont();
+	        font.setBold(true);
+	        font.setUnderline(XSSFFont.U_SINGLE);
+	        XSSFCellStyle style = wb.createCellStyle();
+	        style.setFont(font);
+	        dayCell.setCellStyle(style);
 	        rownum += 2;
 	        
 	        //Creates the letters heading
@@ -58,7 +87,7 @@ public class ExcelWriter {
 	        for(int columnIndex = 0; columnIndex < 5; columnIndex++) {
 	            sheet.autoSizeColumn(columnIndex);
 	        }
-	        rownum++;
+	        rownum += 2;
 	        FileOutputStream out = new FileOutputStream(filepath);
 	        wb.write(out);
 	        out.close();
