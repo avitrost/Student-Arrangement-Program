@@ -1,10 +1,17 @@
 package txtClientProject;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -21,9 +29,8 @@ import javafx.stage.Stage;
 
 public class SortedStudentScene
 extends Scene {
-    private ArrayList<Student> students;
-    private ArrayList<ArrayList<Student>> output;
-    private Button resort;
+	private String filepath;
+    private ArrayList<Student>[][] students;
     private Button save;
     private Button Mon;
     private Button Tue;
@@ -31,56 +38,60 @@ extends Scene {
     private Button Thu;
     private Button Fri;
     private String[] days = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri"};
-    private StudentSorter sorter;
+    //private StudentSorter sorter;
     private BorderPane display = new BorderPane();
     private StudentTable table;
     private int day = 0;
     private String session;
 
-    public SortedStudentScene(BorderPane bp, ArrayList<Student>[][] groups) {
-        super(bp, 850.0, 600.0);
-        session = groups.get(0).getSession() + "";
+    public SortedStudentScene(BorderPane bp, ArrayList<Student>[][] groups, String filepath) {
+    	super(bp, 800, 600);
+    	this.filepath = filepath;
+        session = groups[0][0].get(0).getSession() + "";
         students = groups;
-        resort = new Button("Sort");
         save = new Button("Save");
+        save.setId("save-button");
         Mon = new Button(days[0]);
+        Mon.setId("pressed-button");
         Tue = new Button(days[1]);
+        Tue.setId("unpressed-button");
         Wed = new Button(days[2]);
+        Wed.setId("unpressed-button");
         Thu = new Button(days[3]);
+        Thu.setId("unpressed-button");
         Fri = new Button(days[4]);
-        Button[] list = {resort, save, Mon,Tue,Wed,Thu,Fri};
+        Fri.setId("unpressed-button");
+        Button[] list = {save, Mon,Tue,Wed,Thu,Fri};
 		for(Button b:list) {
-			b.setFont(new Font("Times New Roman",24));
 			b.setOnAction(e->ButtonClicked(e));
 		}
-        Tooltip tooltip = new Tooltip("Click to sort the students again");
-        this.resort.setTooltip(tooltip);
-        HBox hbox = new HBox();
+		HBox hbox = new HBox();
         hbox.setPadding(new Insets(10.0));
         hbox.setSpacing(8.0);
-        hbox.getChildren().addAll(resort, save);
+        hbox.getChildren().addAll(save);
         hbox.setAlignment(Pos.CENTER);
         bp.setBottom(hbox);
-        HBox hungrybox = new HBox();//Jiggs!
+        HBox hungrybox = new HBox();
 		hungrybox.setPadding(new Insets(10));
 		hungrybox.setSpacing(8);
 		hungrybox.getChildren().addAll(Mon,Tue,Wed,Thu,Fri);
 		hungrybox.setAlignment(Pos.CENTER);
 		display.setTop(hungrybox);
         table = new StudentTable();
+		table.update(students[0]);
         display.setCenter(table);
         bp.setCenter(display);
-        int clemente = 0;
+        /*int clemente = 0;
         int femaleNum =0 ;
         int femaleClemente = 0;
 		for(Student s:students) {
 			boolean both = true;
-			if(s.getSchool().equals("Roberto W. Clemente")) {
+			if(s.isClemente()) {
 				clemente++;
 			} else {
 				both = false;
 			}
-			if(s.getGender().equals("F")) {
+			if(s.isFemale()) {
 				femaleNum++;
 			} else {
 				both = false;
@@ -100,19 +111,26 @@ extends Scene {
 		alert.setTitle("Students Sorted");
 		alert.setHeaderText("The file has been sorted.");
 		alert.setContentText("Details:\nSession: "+session+"\nNumber of students: "+students.size()+"\nNumber of groups: "+groupNum+"\nMax Clemente per group: "+clementeLimit);
-		alert.show();
+		alert.show();*/
     }
 
     public void ButtonClicked(ActionEvent e) {
         Object obj = e.getSource();
-        if (obj == resort) {
+        if (obj == save) {
             try {
-                output = sorter.sort();
-                table.update(output.get(day));
-            }
-            catch (Exception var3_3) {}
-        } else if (obj == save) {
-            save();
+				ExcelWriter.writeFile(new File(filepath+"Session_"+session+".xlsx"), students);
+				String[] answers = {"Open File", "Continue"};
+				int ans = JOptionPane.showOptionDialog(null, "Solution was saved to " + filepath+"Session_"+session+".xlsx", "Solution Saved",
+		                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, answers, answers[0]);
+				switch(ans){
+				case 0:
+					File file = new File(filepath+"Session_"+session+".xlsx");
+					Desktop desktop = Desktop.getDesktop();
+			        if(file.exists()) desktop.open(file);
+				}
+			} catch (InvalidFormatException | IOException e1) {
+				e1.printStackTrace();
+			}
         } else {
         	switchView(((Button)obj).getText());//which day is pressed?
         }
@@ -139,62 +157,15 @@ extends Scene {
 			break;
 		}
 		//System.out.println(day);
-		table.update(output.get(day));
+		table.update(students[day]);
 		Button[] list = {Mon, Tue, Wed, Thu, Fri};
 		for(int i=0; i<list.length; i++) {
 			if(list[i].getText().equals(button)) {
-				list[i].setStyle("-fx-background-color: yellow;");
+				list[i].setId("pressed-button");
 			} else {
-				list[i].setStyle(null);
+				
+				list[i].setId("unpressed-button");
 			}
 		}	
     }
-    /**
-	 * Saves the text in the output field to an Excel file
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void save() {
-		FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose Save Location");
-        String initial = Program.getFilePath();//create the file
-        initial = initial.substring(0, initial.lastIndexOf("\\")+1);
-        fileChooser.setInitialDirectory(new File(initial)); 
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Microsoft Excel", "*.xlsx"));
-        fileChooser.setInitialFileName("Summer Math Groups Session "+session);
-        File file = fileChooser.showSaveDialog(new Stage());
-        if (file != null) {
-            try {
-            	SheetWriter sw = new SheetWriter(file.getAbsolutePath());
-    			for(int i=0;i<5;i++) {//for each day, read the table data and write it to the Excel file
-    				switchView(days[i]);
-    				ObservableList<TableColumn> temp = table.getColumns();
-    				sw.addSheet(days[i]);
-    				sw.addRow();
-    				for(TableColumn tc:temp) {
-    					sw.addCell(tc.getText());
-    				}
-    				for(int k=0; k<table.getItems().size(); k++) {//add a student's data
-    					sw.addRow();
-    					for(TableColumn col:temp) {
-    						sw.addCell((String) col.getCellData(k));
-    					}
-    				}
-    			}
-    			sw.save();
-    			Alert alert = new Alert(AlertType.INFORMATION);
-    			alert.setTitle("File Saved!");
-    			alert.setHeaderText("File Saved!");
-    			alert.setContentText("The student list has been saved at "+file.getAbsolutePath());
-    			alert.showAndWait();	
-            } catch (IOException e) {
-				//Pop up: can't save file!
-				//e.printStackTrace();
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("Error!");
-				alert.setHeaderText("File Not Saved!");
-				alert.setContentText("The file could not be saved.\nCheck the file "+file.getAbsolutePath()+" and see if it is open or being used by another process.");
-				alert.showAndWait();
-            }
-        }
-	}
 }
