@@ -1,0 +1,32 @@
+/*Sets the settings for the scene*/
+.root {
+	-fx-background-color: #282828;
+	-fx-vgap: 50px;
+}
+
+/*Sets the settings for all labels, can create subsections to customise each label*/
+.label {
+	-fx-text-fill: white;
+	-fx-font: 16px "Gill Sans Mt";
+}
+
+#label-headers {
+	-fx-font: 24px "Gill Sans Mt";
+	-fx-padding: 20px 0px 80px 0px;
+}
+
+/*Sets settings for all buttons */
+.button {
+	-fx-background-color: white;	
+	-fx-font: 12px "Gill Sans Mt";
+	-fx-text-fill: #282828;
+	-fx-background-radius: 2;
+}
+
+#confirm-button {
+	-fx-font-size: 16px;
+}
+
+#big-button {
+	-fx-font: 24px "Gill Sans Mt";
+}
