@@ -126,7 +126,7 @@ extends Scene {
 				case 0:
 					File file = new File(filepath+"Session_"+session+".xlsx");
 					Desktop desktop = Desktop.getDesktop();
-			        if(file.exists()) desktop.open(file);
+			        desktop.open(file);
 				}
 			} catch (InvalidFormatException | IOException e1) {
 				e1.printStackTrace();

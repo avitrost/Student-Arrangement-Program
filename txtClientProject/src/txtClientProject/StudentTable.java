@@ -16,41 +16,30 @@ import javafx.scene.input.MouseEvent;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class StudentTable extends TableView {
 	//These are the columns of student data in the table view
-	TableColumn firstNameCol = new TableColumn("First Name");
-	TableColumn lastNameCol = new TableColumn("Last Name");
-	TableColumn seatCol = new TableColumn("Seat");
+	TableColumn nameCol = new TableColumn("Name");
+	TableColumn seatCol = new TableColumn("Seat (Excel Format)");
 	TableColumn genCol = new TableColumn("Gender");
 	TableColumn schoolCol = new TableColumn("Middle School");
-	TableColumn houseCol = new TableColumn("Program");
 
 	public StudentTable() {
 		//set columns
 		//property value factory: <Object, field type>("name of field")
 		setEditable(false);
-		firstNameCol.setCellValueFactory(new PropertyValueFactory<Student,String>("first"));
-		firstNameCol.setStyle("-fx-font-size:16;");
-		lastNameCol.setCellValueFactory(new PropertyValueFactory<Student,String>("last"));
-		lastNameCol.setStyle("-fx-font-size:16;");
-		seatCol.setCellValueFactory(new PropertyValueFactory<Student,String>("seat"));
+		nameCol.setCellValueFactory(new PropertyValueFactory<Student,String>("fullName"));
+		// Set styles for all table headers
+		nameCol.setId("table-headers");
+		seatCol.setId("table-headers");
+		genCol.setId("table-headers");
+		schoolCol.setId("table-headers");
+		//
+		seatCol.setCellValueFactory(new PropertyValueFactory<Student,String>("seatNum"));
 		seatCol.setStyle("-fx-font-size:16;");
-		seatCol.setComparator(new SeatComparator());
-		genCol.setCellValueFactory(new PropertyValueFactory<Student,String>("gender"));
+		genCol.setCellValueFactory(new PropertyValueFactory<Student,String>("myGender"));
 		genCol.setStyle("-fx-font-size:16;");
-		schoolCol.setCellValueFactory(new PropertyValueFactory<Student,String>("school"));
+		schoolCol.setCellValueFactory(new PropertyValueFactory<Student,String>("mySchool"));
 		schoolCol.setStyle("-fx-font-size:16;");
-		houseCol.setCellValueFactory(new PropertyValueFactory<Student,String>("program"));
-		houseCol.setStyle("-fx-font-size:16;");
-		getColumns().addAll(lastNameCol, firstNameCol, seatCol, genCol, schoolCol, houseCol);
+		getColumns().addAll(nameCol, seatCol, genCol, schoolCol);
 		setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-		setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-            	if(event.getButton()==MouseButton.SECONDARY){
-                    //popup a help window
-            		HelpWindow hp = new HelpWindow();
-            	}
-            }
-        });
 	}
 	
 	/**
@@ -59,23 +48,20 @@ public class StudentTable extends TableView {
 	 */
 	
 	//update the data based on the arraylist of students, preserving orientation and sorting arrangement of previous chart
-	public void update(ArrayList<Student> students) {
-		TableColumn sortcolumn = null;
-        SortType st = null;
-        if (!getSortOrder().isEmpty()) {
-            sortcolumn = (TableColumn) getSortOrder().get(0);
-            st = sortcolumn.getSortType();
-        }
+	public void update(ArrayList<Student>[] students) {
 		ObservableList<Student> data = FXCollections.observableArrayList();
-		for(Student s:students) {
-			data.add(s);
+		
+		int nextNum = 1;
+		for(ArrayList<Student> group: students) {
+			int nextLetter = 65;
+			for(Student s: group){
+				s.setSeatNum((char)nextLetter, nextNum);
+				nextLetter++;
+				data.add(s);
+			}
+			nextNum++;
 		}
 		setItems(data);
-		if (sortcolumn!=null) {
-            getSortOrder().add(sortcolumn);
-            sortcolumn.setSortType(st);
-            sortcolumn.setSortable(true); // This performs a sort
-        }
 	}
 	
 	

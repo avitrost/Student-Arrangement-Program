@@ -1,7 +1,11 @@
 package txtClientProject;
 
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleStringProperty;
+
 public class Student {
 
+	private SimpleStringProperty fullName, myGender, mySchool, seatNum;
 	private String name;
 	private String school;
 	private String gender;
@@ -15,13 +19,15 @@ public class Student {
 	private int session;
 	private int numberInList;
 	private int classification;
-	private int seatNum;
 	private int prime;
 	private long product;
 	private static int nextPrime = 2;
 	private static int numberOfStudents = 0;
 
 	public Student(String name, String gender, String session, String school) { // Fix to template
+		fullName = new SimpleStringProperty(name);
+		myGender = new SimpleStringProperty(gender);
+		mySchool = new SimpleStringProperty(school);
 		this.name = name;
 		this.school = school;
 		this.gender = gender;
@@ -62,6 +68,22 @@ public class Student {
 			this.placeholder = true;
 			name = "placeholder";
 		}
+	}
+	
+	public Property fullNameProperty(){
+		return fullName;
+	}
+	
+	public Property mySchoolProperty(){
+		return mySchool;
+	}
+	
+	public Property myGenderProperty(){
+		return myGender;
+	}
+	
+	public Property seatNumProperty(){
+		return seatNum;
 	}
 
 	public boolean isClemente() {
@@ -196,12 +218,8 @@ public class Student {
 		this.seats = seats;
 	}
 	
-	/*public static void main(String[] args) {
-		System.out.println(gcd(9,27));
-		System.out.println(gcd(18,12));
-		System.out.println(gcd(6577,6576));
-		System.out.println(gcd(11,121));
-		System.out.println(gcd(121,11));
-	}*/
+	public void setSeatNum(char letter, int num){
+		seatNum = new SimpleStringProperty((letter+"")+(num+""));
+	}
 
 }

@@ -13,35 +13,36 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 public class SelectFileScene extends Scene{
 	
-	private GridPane pane;
 	private File file;
 	private Label topText;
 	private Label middleText;
-	private Label incorrectFile;
 	private Button chooseFile;
 	private Button confirm;
 	private TextField fileName;
-	private Scene selectSessionScene = new SelectSessionScene(new GridPane());
+	private String filepath;
+	private Scene selectSessionScene;
 	private ArrayList<Student> students;
-	private boolean wrongFile = false;
 	
 	
-	public SelectFileScene(GridPane gridPane){ // It doesn't need to be GridPane, but it will most likely be the best option for this
-		super(gridPane, 800, 600); // Window size
-		pane = gridPane;
+	public SelectFileScene(GridPane pane){ // It doesn't need to be GridPane, but it will most likely be the best option for this
+		super(pane, 800, 600); // Window size
 		topText = new Label("File Selection");
 		topText.setId("label-headers");
-		middleText = new Label("Excel File Name:");
-		incorrectFile = new Label("The file you have chosen is of incorrect format.\nPlease select a file with the correct format and headings.");
+		middleText = new Label("File Name:");
 		fileName = new TextField("");
 		fileName.setEditable(false);
 		fileName.textProperty().addListener(new ChangeListener<String>() { // Resizes TextField to fit new text
@@ -50,7 +51,7 @@ public class SelectFileScene extends Scene{
 	                String n) {
 	            // expand the textfield
 	            fileName.setPrefWidth(TextUtils.computeTextWidth(fileName.getFont(),
-	                    fileName.getText(), 0.0D) + 14);
+	                    fileName.getText(), 0.0D) + 1);
 	        }
 	    });
 		chooseFile = new Button("Choose File");
@@ -73,53 +74,55 @@ public class SelectFileScene extends Scene{
 		GridPane.setConstraints(fileName, 1, 1);
 		GridPane.setConstraints(chooseFile, 2, 1);
 		GridPane.setConstraints(confirm, 1, 2);
-		//GridPane.setConstraints(incorrectFile, 1, 2);
 		GridPane.setHalignment(topText, HPos.CENTER); // Centers elements in their cells
 		GridPane.setHalignment(confirm, HPos.CENTER);
 	    pane.getChildren().addAll(topText, middleText, fileName, chooseFile, confirm); // Adds elements to the pane so they can be visible
 	}
 	
 	public void selectFile() {
-		selectSessionScene.getStylesheets().add("DarkMaterial.css");
-		FileDialog dialog = new FileDialog((Frame)null, "Select File to Open");
-		dialog.setDirectory("C:\\");
-		dialog.setFile("*.xlsx");
-		dialog.setMode(FileDialog.LOAD);
-		dialog.setVisible(true);
-		//file = new File(dialog.getDirectory() + dialog.getFile());
-		try{
-			file = dialog.getFiles()[0];
-		} catch(ArrayIndexOutOfBoundsException e){
-			return;
-		}
-		file = dialog.getFiles()[0];
-		fileName.setText(file.getName());
-		ExcelReader er = null; // Does this after select file so that there is minimal delay on confirm button
 		try {
-			er = new ExcelReader(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidFormatException e) {
-			e.printStackTrace();
-		}
-		students = er.readFile();
-		if(students == null || students.size() == 0){
-			confirm.setDisable(true);
-			wrongFile = true;
-			GridPane.setConstraints(incorrectFile, 1, 2);
-			GridPane.setConstraints(confirm, 1, 3);
-			pane.getChildren().add(incorrectFile);
-		}
-		else{
-			confirm.setDisable(false);
-			if(wrongFile){
-				wrongFile = false;
-				pane.getChildren().remove(incorrectFile);
-				GridPane.setConstraints(confirm, 1, 2);
+			FileDialog dialog = new FileDialog((Frame)null, "Select File to Open");
+			dialog.setDirectory("C:\\");
+			dialog.setFile("*.xlsx");
+			dialog.setMode(FileDialog.LOAD);
+			dialog.setVisible(true);
+			//file = new File(dialog.getDirectory() + dialog.getFile());
+			try{
+				file = dialog.getFiles()[0];
+			} catch(ArrayIndexOutOfBoundsException e){
+				return;
 			}
+			file = dialog.getFiles()[0];
+			fileName.setText(file.getName());
+			
+			confirm.setDisable(false);
+			ExcelReader er = null; // Does this after select file so that there is minimal delay on confirm button
+			try {
+				er = new ExcelReader(file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InvalidFormatException e) {
+				e.printStackTrace();
+			}
+			students = er.readFile();
+			if(students == null || students.size() == 0){
+	            JOptionPane.showMessageDialog(null,
+	                    "Please select a file with the correct format", "Incorrect Format",
+	                    JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+			String absolutePath = file.getAbsolutePath();
+		    
+		    filepath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)) + "\\";
+		    
+			selectSessionScene = new SelectSessionScene(new GridPane(), filepath);
+			selectSessionScene.getStylesheets().add("DarkMaterial.css");
 		}
-		//System.out.println(file);
-		//System.out.println(file.equals(dialog.getFiles()[0]));
+		catch (java.lang.IllegalStateException e){
+			confirm.setDisable(true);
+		    JOptionPane.showMessageDialog(null,"Please select a file with the correct format", "Incorrect Format",JOptionPane.ERROR_MESSAGE);
+	         return;
+		}
 	}
 	
 	public void confirm(){
@@ -129,7 +132,7 @@ public class SelectFileScene extends Scene{
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		System.out.println(students); // For testing
+		//System.out.println(students); // For testing
 		((SelectSessionScene) selectSessionScene).setStudents(students);
 		Program.getWindow().setScene(selectSessionScene);
 		

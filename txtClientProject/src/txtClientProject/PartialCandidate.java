@@ -257,7 +257,7 @@ public class PartialCandidate {
 				}
 			}
 		}
-		System.out.println("Check the getGroups() method");
+		//System.out.println("Check the getGroups() method");
 		return null;
 	}
 	

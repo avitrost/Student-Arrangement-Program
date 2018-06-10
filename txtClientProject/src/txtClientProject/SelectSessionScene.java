@@ -23,11 +23,13 @@ public class SelectSessionScene extends Scene{
 	private Button session1;
 	private Button session2;
 	private ArrayList<Student> students;
+	private String filepath;
 	
 	
-	public SelectSessionScene(GridPane pane){
-
+	public SelectSessionScene(GridPane pane, String filepath){
+		
 		super(pane, 800, 600); // Window size
+		this.filepath = filepath;
 		heading = new Label("Select Session");
 		heading.setId("label-headers");
 		session1 = new Button("Session One");
@@ -55,7 +57,7 @@ public class SelectSessionScene extends Scene{
 	
 	public void selectSession(int session){
 		long startTime = System.nanoTime();
-		System.out.println("Session:  " + session);
+		//System.out.println("Session:  " + session);
 		ArrayList<Student> justSession = new ArrayList<Student>(students);
 		Iterator<Student> i1 = justSession.iterator();
 		while(i1.hasNext()){
@@ -117,7 +119,7 @@ public class SelectSessionScene extends Scene{
 			solution = Algorithm.generateSeating(placeholders, solution, totalSize);
 		}*/
 		solution = Algorithm.generateSeating(nonClementeBoys, solution, totalSize);
-		System.out.println(solution);
+		//System.out.println(solution);
 		for(int j = 0; j < solution.getSeating().size(); j++){
 			solution.getSeating().get(j).setNumberInList(j);
 		}
@@ -134,24 +136,25 @@ public class SelectSessionScene extends Scene{
 			groupings[groupNum] = al;
 			groupNum++;
 		}
-		for(int k = 0; k < 5; k++){
+		/*for(int k = 0; k < 5; k++){ //TODO comment this
 			System.out.println("Day " + (k + 1) + ":");
 			for(int i = numGroups*k; i < numGroups+numGroups*k; i++){
 				System.out.println(groupings[i]);
 			}
-		}
+		}*/
 		ArrayList<Student>[][] seating = new ArrayList[5][numGroups];
 		for(int i = 0; i < 5; i++){
 			for(int j = 0; j < numGroups; j++){
 				seating[i][j] = groupings[i * numGroups + j];
 			}
 		}
-		System.out.println(Arrays.deepToString(seating));
+		//System.out.println(Arrays.deepToString(seating));
 		
 		
-		JOptionPane.showMessageDialog(null,
+		/*JOptionPane.showMessageDialog(null,
 				"Found a solution in " + ((double) System.nanoTime() - startTime) / 1000000000 + " seconds", "Algorithm Finished",
-				JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.INFORMATION_MESSAGE);*/
+		seatStudents(seating);
 		
 	}
 	
@@ -205,8 +208,9 @@ public class SelectSessionScene extends Scene{
 				}
 			}
 		}
-		Scene sortedStudentScene = new SortedStudentScene(new BorderPane(), groups);
+		Scene sortedStudentScene = new SortedStudentScene(new BorderPane(), groups, filepath);
 		Program.getWindow().setScene(sortedStudentScene);
+		sortedStudentScene.getStylesheets().add("DarkMaterial.css");
 	}
 	
 	public void swap(ArrayList<Student> group, int index1, int index2){

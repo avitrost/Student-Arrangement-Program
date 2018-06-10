@@ -32,7 +32,7 @@ public class Algorithm {
 		if(c.getNextStudentNum() == numStudents - 1){// || c.getSeatsLeft().size() == 0){ // Accept(c)
 			finished = true;
 			bestCandidate = c;
-			System.out.println(c);             // Temporary Output(c)
+			//System.out.println(c);             // Temporary Output(c)
 		}else if(girlsMode){
 			int numPairs = c.getNumDoubleGirlGroups();
 			if(numPairs > bestCandidateNumPairs){
@@ -153,7 +153,7 @@ public class Algorithm {
 		}
 		Student newStudent = students.get(c.getNextStudentNum());
 		if(newStudent.toString().trim().equals("Song, Justin Y.") && !girlsMode){
-			System.out.println("test");
+			//System.out.println("test");
 		}
 		//System.out.println(newStudent);
 		Student[][] groups = c.getGroups(newStudent);
@@ -229,28 +229,28 @@ public class Algorithm {
 		students = studentList;
 		numStudents = students.size();
 		sortStudents();
-		System.out.println(students);
+		//System.out.println(students);
 		
 		startTime = System.nanoTime();
-		System.out.println("Starting at " + startTime);
+		//System.out.println("Starting at " + startTime);
 		if(!girlsMode){
 			finished = false;
 			PartialCandidate root = c;
 			root.setNextStudentNum(-1);
 			backtrack(root);
-			System.out.println(bestCandidate);
+			//System.out.println(bestCandidate);
 		}
 		
-		System.out.println(finished);
+		//System.out.println(finished);
 		if(girlsMode){
 			PartialCandidate root = new PartialCandidate(students, totalNumInSession); //
 			backtrack(root);
-			System.out.println(bestCandidate);
-			System.out.println(bestCandidateNumPairs);
+			//System.out.println(bestCandidate);
+			//System.out.println(bestCandidateNumPairs);
 			girlsMode = false;
 		}
 		long endTime = System.nanoTime();
-		System.out.println("finished at " + endTime + ", algorithm took " + (endTime - startTime));
+		//System.out.println("finished at " + endTime + ", algorithm took " + (endTime - startTime));
 		return bestCandidate;
 		
 		

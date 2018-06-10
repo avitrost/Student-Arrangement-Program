@@ -519,7 +519,7 @@ public class TemplateArrays {
 	}
 	
 	public static Integer[][] selectTemplate(int numGroups){
-		System.out.println(Arrays.deepToString(templates.get(numGroups)));
+		//System.out.println(Arrays.deepToString(templates.get(numGroups)));
 		return templates.get(numGroups);
 	}
 
