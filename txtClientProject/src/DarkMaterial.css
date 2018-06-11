@@ -30,3 +30,9 @@
 #big-button {
 	-fx-font: 24px "Gill Sans Mt";
 }
+
+#table-headers {
+    -fx-background-color: #282828;
+    -fx-font: 16px "Gill Sans Mt";
+    -fx-text-fill: white;
+}
